@@ -1,0 +1,8 @@
+{{! A simple string translation. }}
+{{ t 'A simple string.' }}
+<br />
+{{! A plural string translation. }}
+{{ tr this key='There is a person.' count=total_people }}
+<br />
+{{! Handlebars sub-expression of plural string translation, then a sprintf variable replacement. }}
+{{ tr this key='You have __messages__ new message.' count=total_messages messages=total_messages }}

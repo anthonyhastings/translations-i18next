@@ -1,111 +1,130 @@
 'use strict';
 
-// Loading dependencies and setting variables.
-var i18n = require('i18next-client'),
-    Handlebars = require('hbsfy/runtime'),
-    initialCatalog = require('./../../locales/fr/fr.json'),
-    testTemplate = require('./templates/test.hbs');
+// Loading dependencies, caching selectors and defining other variables.
+var Ajax = require('simple-ajax'),
+    apiPrefix = '../locales/',
+    i18nHelper = require('./utils/i18n-helper'),
+    testTemplate = require('./test.hbs'),
+    greetingElement = document.querySelector('.js-greeting'),
+    languageElement = document.querySelector('.js-select-language'),
+    messageCountElement = document.querySelector('.js-message-count'),
+    messageElement = document.querySelector('.js-messages'),
+    templateContainerElement = document.querySelector('.js-template-container');
 
 /**
- *  Simple helper for direct translations.
+ *  Retrieves the language files that match the language code.
+ *  Performs an API request for data if necessary.
  *
- *  @param {string} i18n_key - Key to look up in translations catalog.
- *  @return {string}
- *
- *  Example Usage:
- *  {{ t "Hello world." }}
+ *  @param {string} langCode - Two-letter language code.
+ *  @return {object} - Promise.
  */
-Handlebars.registerHelper('t', function(i18n_key) {
-    var result = i18n.t(i18n_key);
-    return new Handlebars.SafeString(result);
-});
+function getTranslations(langCode) {
+    return new Promise(function(resolve, reject) {
+        if (i18nHelper.options.resStore.hasOwnProperty(langCode)) {
+            resolve();
+        } else {
+            var ajax = new Ajax({
+                method: 'GET',
+                url: apiPrefix + langCode + '/' + langCode + '.json'
+            });
 
-/**
- *  A more robust helper for handling translations including plurals.
- *  Creates one big object of variables from the passed in data
- *  to the template, and any key/value pairs on the call to the
- *  helper. Passes this object off to the i18n methods to
- *  retrieve the appropriate result.
- *
- *  @param {object} context - Automatically set by Handlebars. The template context.
- *  @param {object} options - Automatically set by Handlebars. Contains key/values set when calling helper.
- *  @return {string}
- *
- *  Example Usage:
- *  {{ tr this key="Hello world." }}
- *  {{ tr this key="I have an apple." count=3 }}
- *  {{ tr this key="I have an apple." count=apple_count }}
- *  {{ tr this key="You have __messages__ new message." count=1 messages=1 }}
- *  {{ tr this key="You have __messages__ new message." count=message_count messages=message_count }}
- */
-Handlebars.registerHelper('tr', function(context, options) {
-    var context = context || {},
-        i18nOptions = i18n.functions.extend(options.hash, context);
+            ajax.on('success', function(event, data) {
+                i18nHelper.addResourceBundle(langCode, 'translation', JSON.parse(data));
+                resolve();
+            });
 
-    if (options.fn) {
-        i18nOptions.defaultValue = options.fn(context);
-    }
+            ajax.on('error', function(event, data) {
+                reject(JSON.parse(data));
+            });
 
-    var i18nResult = i18n.t(i18nOptions.key, i18nOptions);
-    return new Handlebars.SafeString(i18nResult);
-});
-
-// Instantiate the i18n library, ensuring we give it a translation
-// catalog so it doesn't try to load one async.
-i18n.init({
-    nsseparator: ':::',     // Necessary to allow gettext keys rather than symbolic keys (as use of `.` would break).
-    keyseparator: '::',     // Necessary to allow gettext keys rather than symbolic keys (as use of `.` would break).
-    useCookie: false,
-    debug: false,
-    lng: 'fr',
-    resStore: {
-        fr: {
-            translation: initialCatalog
+            ajax.send();
         }
-    }
+    });
+}
+
+/**
+ *  Applies the translation data to the i18n instance and
+ *  then triggers an update of the greetings.
+ *
+ *  @param {string} langCode - Two-letter language code.
+ */
+function setLanguage(langCode) {
+    var translationsRequest = getTranslations(langCode);
+
+    translationsRequest.then(
+        function() {
+            i18nHelper.setLng(langCode, function() {
+                setGreeting();
+                setMessage();
+                setTemplate();
+            });
+        },
+        function() {
+            console.warn('setLanguage', 'Error setting language.');
+        }
+    );
+}
+
+/**
+ *  Updates the DOM with the appropriate greeting.
+ *  This demonstrates a standard translation via `gettext`.
+ */
+function setGreeting() {
+    var greetingTranslation = i18nHelper.t('Hello world.');
+    greetingElement.innerHTML = greetingTranslation;
+}
+
+/**
+ *  Takes the message count and ensures its a numeric value. Uses
+ *  `ngettext` to determine which message (singular or plural)
+ *  should be used then uses `sprintf` to update the dynamic
+ *  values within the statement. After this is all done, the
+ *  DOM is updated.
+ */
+function setMessage() {
+    var inputValue = messageCountElement.value
+    inputValue = parseInt(inputValue.trim(), 10) || 0;
+
+    messageElement.innerHTML = i18nHelper.t('You have __messages__ new message.', {
+        count: inputValue,
+        messages: inputValue
+    });
+}
+
+/**
+ *  Updates the DOM with a handlebars template that outputs
+ *  sentences via `gettext`, `ngettext` and `sprintf`.
+ */
+function setTemplate() {
+    templateContainerElement.innerHTML = testTemplate({
+        total_people: 2,
+        total_messages: 1
+    });
+}
+
+/**
+ *  Whenever the language selection changes, trigger update
+ *  logic to change accordingly.
+ *
+ *  @param {object} event - DOM Event.
+ */
+languageElement.addEventListener('change', function(event) {
+    var chosenValue = event.target.value;
+    setLanguage(chosenValue);
 });
 
-// String lookup.
-console.log(i18n.t('Hello world.'));
+/**
+ *  Whenever the message count field is updated we trigger
+ *  the logic to update the DOM.
+ *
+ *  @param {object} event - DOM Event.
+ */
+messageCountElement.addEventListener('keyup', function(event) {
+    event.preventDefault();
+    setMessage();
+});
 
-// Plural lookup.
-console.log(i18n.t('I have an apple.', { count: 1 }));
-console.log(i18n.t('I have an apple.', { count: 2 }));
-
-// Plural lookup with variable replacement.
-console.log(i18n.t('You have __messages__ new message.', { count: 1, messages: 1 }));
-console.log(i18n.t('You have __messages__ new message.', { count: 6, messages: 6 }));
-
-// Handlebars template using helpers to emulate all of the above.
-console.log(testTemplate({
-    apple_count: 1,
-    message_count: 6
-}));
-
-
-
-
-
-
-
-setTimeout(function() {
-    i18n.addResourceBundle('pl', 'translation', {
-        "Hello world.": "Witaj świecie.",
-        "I have an apple.": "Mam jabłko.",
-        "I have an apple._plural_2": "Mam wiele jabłek.",
-        "I have an apple._plural_5": "Mam wiele jabłek.",
-        "You have __messages__ new message.": "Musisz __messages__ nową wiadomość.",
-        "You have __messages__ new message._plural_2": "Masz __messages__ nowe wiadomości.",
-        "You have __messages__ new message._plural_5": "Masz __messages__ nowych wiadomości."
-    });
-
-    i18n.setLng('pl', function() {
-        console.log('ok. now what.');
-        console.log(i18n.lng(), i18n.t('Hello world.'));
-
-        i18n.setLng('fr', function() {
-            console.log('there and back again!');
-            console.log(i18n.lng(), i18n.t('Hello world.'));
-        });
-    });
-}, 1000);
+// Ensure starting sentences are output.
+setGreeting();
+setMessage();
+setTemplate();
