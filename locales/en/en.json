@@ -1,7 +1,8 @@
 {
     "Hello world.": "Hello world.",
-    "I have an apple.": "I have many apples.",
-    "I have an apple._plural": "I have many apples.",
     "You have __messages__ new message.": "You have __messages__ new message.",
-    "You have __messages__ new message._plural": "You have __messages__ new messages."
+    "You have __messages__ new message._plural": "You have __messages__ new messages.",
+    "A simple string.": "A simple string.",
+    "There is a person.": "There is a person.",
+    "There is a person._plural": "There are people."
 }

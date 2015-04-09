@@ -1,7 +1,8 @@
 {
     "Hello world.": "Bonjour le monde.",
-    "I have an apple.": "Je ai une pomme.",
-    "I have an apple._plural": "Je ai beaucoup de pommes.",
     "You have __messages__ new message.": "Vous avez __messages__ nouveau message.",
-    "You have __messages__ new message._plural": "Vous avez __messages__ nouveaux messages."
+    "You have __messages__ new message._plural": "Vous avez __messages__ nouveaux messages.",
+    "A simple string.": "Une chaîne simple.",
+    "There is a person.": "Il est une personne.",
+    "There is a person._plural": "Il y a des gens."
 }

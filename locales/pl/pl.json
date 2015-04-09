@@ -1,9 +1,10 @@
 {
     "Hello world.": "Witaj świecie.",
-    "I have an apple.": "Mam jabłko.",
-    "I have an apple._plural_2": "Mam wiele jabłek.",
-    "I have an apple._plural_5": "Mam wiele jabłek.",
     "You have __messages__ new message.": "Musisz __messages__ nową wiadomość.",
     "You have __messages__ new message._plural_2": "Masz __messages__ nowe wiadomości.",
-    "You have __messages__ new message._plural_5": "Masz __messages__ nowych wiadomości."
+    "You have __messages__ new message._plural_5": "Masz __messages__ nowych wiadomości.",
+    "A simple string.": "Prosty łańcuch.",
+    "There is a person.": "Jest osobą.",
+    "There is a person._plural_2": "Są ludzie.",
+    "There is a person._plural_5": "Są ludzie."
 }
