@@ -1,0 +1,23 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2015-04-06 07:04:+0000\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+
+msgid "Hello world."
+msgstr ""
+
+msgid "I have an apple."
+msgid_plural "I have many apples."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "You have __messages__ new message."
+msgid_plural "You have __messages__ new messages."
+msgstr[0] ""
+msgstr[1] ""
