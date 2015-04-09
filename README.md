@@ -1,14 +1,14 @@
 # Usage
 
-## Extracting strings into `.pot` files
+## Extracting strings into a `.pot` file
 
 I have tried using `i18n-parser` which does a good job of identifying simple strings needing to be output into a `.json` object but it's drawbacks outweigh its benefits.
 
 Firstly, it completely [ignores extracting plurals](https://github.com/i18next/i18next-parser/issues/19) because it has no way to identify them within the translations. While other libraries such as `Jed` have specific `ngettext` methods to deal with plurals, this one does not. Secondly, if we manually update the output `.json` file from the parser with our plural keys, then run the parser again, it will overwrite all of our manual updates. Thirdly, the parser is unable to output a `.pot` file which is the standard translators will be expecting to deal with.
 
-For these reasons, it's advised to manually maintain the `.pot` file within `./locales` in order to ensure that plurals can be input correctly. For guidance on the structure of code withing `.pot` files, see [this guide](http://pology.nedohodnik.net/doc/user/en_US/ch-poformat.html).
+For these reasons, it's advised to manually maintain the `.pot` file within `./locales` in order to ensure that plurals can be input correctly. For guidance on the structure of code within `.pot` files, see [this guide](http://pology.nedohodnik.net/doc/user/en_US/ch-poformat.html).
 
-## Creating `.po` catalogues from the `.pot` template
+## Creating `.po` catalogues from the `.pot` file
 
 Using an editor such as `POEdit`, create a new catalog from the `.pot` file and ensure you set the plural form to be the correct value for the language you're about to be translating. You can find a list of plural forms [here](http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms) which should be of help. After this is done, fill out and save your `.po` file as required, placing it into a subdirectory of `./locales` which matches the languages two letter code.
 
