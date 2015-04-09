@@ -3,7 +3,7 @@
 // Loading dependencies and setting variables.
 var i18n = require('i18next-client'),
     Handlebars = require('hbsfy/runtime'),
-    frenchCatalog = require('./../../locales/fr/fr.json'),
+    initialCatalog = require('./../../locales/en/en.json'),
     testTemplate = require('./templates/test.hbs');
 
 /**
@@ -55,10 +55,12 @@ Handlebars.registerHelper('tr', function(context, options) {
 i18n.init({
     nsseparator: ':::',     // Necessary to allow gettext keys rather than symbolic keys (as use of `.` would break).
     keyseparator: '::',     // Necessary to allow gettext keys rather than symbolic keys (as use of `.` would break).
-    lng: 'fr',
+    useCookie: false,
+    debug: false,
+    lng: 'en',
     resStore: {
-        fr: {
-            translation: frenchCatalog
+        en: {
+            translation: initialCatalog
         }
     }
 });
