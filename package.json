@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "i18next-client": "^1.8.2",
+    "i18next-conv": "^0.1.4",
     "i18next-parser": "^0.3.8",
     "simple-ajax": "^2.1.0"
   }
