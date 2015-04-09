@@ -3,7 +3,7 @@
 // Loading dependencies and setting variables.
 var i18n = require('i18next-client'),
     Handlebars = require('hbsfy/runtime'),
-    initialCatalog = require('./../../locales/en/en.json'),
+    initialCatalog = require('./../../locales/fr/fr.json'),
     testTemplate = require('./templates/test.hbs');
 
 /**
@@ -57,9 +57,9 @@ i18n.init({
     keyseparator: '::',     // Necessary to allow gettext keys rather than symbolic keys (as use of `.` would break).
     useCookie: false,
     debug: false,
-    lng: 'en',
+    lng: 'fr',
     resStore: {
-        en: {
+        fr: {
             translation: initialCatalog
         }
     }
@@ -81,3 +81,31 @@ console.log(testTemplate({
     apple_count: 1,
     message_count: 6
 }));
+
+
+
+
+
+
+
+setTimeout(function() {
+    i18n.addResourceBundle('pl', 'translation', {
+        "Hello world.": "Witaj świecie.",
+        "I have an apple.": "Mam jabłko.",
+        "I have an apple._plural_2": "Mam wiele jabłek.",
+        "I have an apple._plural_5": "Mam wiele jabłek.",
+        "You have __messages__ new message.": "Musisz __messages__ nową wiadomość.",
+        "You have __messages__ new message._plural_2": "Masz __messages__ nowe wiadomości.",
+        "You have __messages__ new message._plural_5": "Masz __messages__ nowych wiadomości."
+    });
+
+    i18n.setLng('pl', function() {
+        console.log('ok. now what.');
+        console.log(i18n.lng(), i18n.t('Hello world.'));
+
+        i18n.setLng('fr', function() {
+            console.log('there and back again!');
+            console.log(i18n.lng(), i18n.t('Hello world.'));
+        });
+    });
+}, 1000);

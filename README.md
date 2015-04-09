@@ -1,33 +1,31 @@
-# Terminology
-* `gettext` - Internationalizes a chosen string.
-* `ngettext` - A plural version of `gettext` which uses an integer to determine whether or not to use a singular or plural version of a sentence.
-* `sprintf` - Formats a string and replaces placeholders with variables.
-
 # Usage
 
 ## Extracting strings into `.pot` files
-Ideally we will have English references to our translations dotted throughout our client-side code base. These references could be found in JavaScript source files as well as templating library files such as `.hbs` files.
 
-We are able to extract all of these strings and generate a `.pot` file from them. This is done via a module known as `JSPot`. It is intelligent enough to know the difference between a standard 1:1 translation and one with plurals, ensuring the `.pot` file is output correctly.
+I have tried using `i18n-parser` which does a good job of identifying simple strings needing to be output into a `.json` object but it's drawbacks outweigh its benefits.
 
-Use the command below to generate the `.pot` file:
+Firstly, it completely [ignores extracting plurals](https://github.com/i18next/i18next-parser/issues/19) because it has no way to identify them within the translations. While other libraries such as `Jed` have specific `ngettext` methods to deal with plurals, this one does not. Secondly, if we manually update the output `.json` file from the parser with our plural keys, then run the parser again, it will overwrite all of our manual updates. Thirdly, the parser is unable to output a `.pot` file which is the standard translators will be expecting to deal with.
 
-```node_modules/.bin/jspot extract --target=./locales ./js/src/main.js```
+For these reasons, it's advised to manually maintain the `.pot` file within `./locales` in order to ensure that plurals can be input correctly. For guidance on the structure of code withing `.pot` files, see [this guide](http://pology.nedohodnik.net/doc/user/en_US/ch-poformat.html).
 
 ## Creating `.po` catalogues from the `.pot` template
 
-Using an editor such as `POEdit`, create a new catalog from `.pot file` and ensure you set the plural form to be the correct value for the language you're about to be translating. You can find a list of plural forms [here](http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms) which should be of help. After this is done, fill out and save your `.po` file as required, placing it into the same directory as the `.pot` file but named after the languages two letter code.
+Using an editor such as `POEdit`, create a new catalog from the `.pot` file and ensure you set the plural form to be the correct value for the language you're about to be translating. You can find a list of plural forms [here](http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms) which should be of help. After this is done, fill out and save your `.po` file as required, placing it into a subdirectory of `./locales` which matches the languages two letter code.
 
 NOTE: If you are using POEdit and are creating a catalog for the first time you may find it best to add the plural form **after** the initial setup screen. Sometimes if the plural form is input during the first setup screen it doesn't work correctly.
 
 ## Converting `.po` catalogues into `.json` catalogues
 
-The Jed library used for i18n is unable to directly read a `.po` file so it must be converted into Jed-compatible `.json` format. This is done via a module known as `po2json` and can be run with the following command:
+The library is unable to directly read a `.po` file so it must be converted into i18next-compatible `.json` format. This is done via a module known as `i18next-conv` which can do two-way conversion on both of these file formats. Conversion to `.json` files can be run with the following command:
 
-```gulp po2json```
+```make convert-po-files```
 
-## Using the API
+This command will trigger a sub-method I've written within the `Makefile`. It cycles through each of our locale folders, reads the `.po` files and converts them into `.json` files, placing them in the same folder with the same filename. The list of locales it parses is stated within the `Makefile` and will need to be kept up to date as more languages are added.
 
-To serve the `.json` catalogues to the front-end, an API has been made to retrieve them. Ensure it is running before trying out this demo. It can be run with the following command:
+## Further information
 
-```node api/index.js```
+- [i18next website](http://i18next.com/)
+- [i18next-parser](https://github.com/i18next/i18next-parser)
+- [i18next-conv](https://github.com/i18next/i18next-gettext-converter)
+- [Using gettext style within i18next #1](http://blog.arkency.com/2015/03/use-your-gettext-translations-in-your-react-components/)
+- [Using gettext style within i18next #2](http://stackoverflow.com/questions/19403787/gettext-style-keys-with-i18next-and-general-workflow)

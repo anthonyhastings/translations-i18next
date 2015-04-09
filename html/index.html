@@ -2,9 +2,24 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>Translations Test (i18next)</title>
+        <title>Translations Test (i18next.js)</title>
     </head>
     <body>
+        <label for="select-language">Select a language:</label>
+        <select id="select-language" class="js-select-language">
+            <option value="en" selected>English</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="pl">Polish</option>
+        </select>
+
+        <br><br>
+        <h1 class="js-greeting"></h1>
+
+        <br><br>
+        <input class="js-message-count" type="text" value="1">
+        <h1 class="js-messages"></h1>
+
         <script src="js/main.min.js"></script>
     </body>
 </html>
