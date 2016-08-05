@@ -1,6 +1,28 @@
-# Usage
+# Translations (i18next)
 
-## Extracting strings into a `.pot` file
+## Introduction
+
+Demonstrates maintaining a pot template, then converting populated po catalogues
+into json catalogues and using gettext functions within the application code.
+
+## Installation
+
+To install the application, run the following:
+
+```
+npm install;
+```
+
+To run the application, run the following:
+
+```
+make convert-po-files;
+gulp build && gulp server;
+```
+
+## Usage
+
+### Extracting strings into a `.pot` file
 
 I have tried using `i18n-parser` which does a good job of identifying simple strings needing to be output into a `.json` object but it's drawbacks outweigh its benefits.
 
@@ -8,13 +30,13 @@ Firstly, it completely [ignores extracting plurals](https://github.com/i18next/i
 
 For these reasons, it's advised to manually maintain the `.pot` file within `./locales` in order to ensure that plurals can be input correctly. For guidance on the structure of code within `.pot` files, see [this guide](http://pology.nedohodnik.net/doc/user/en_US/ch-poformat.html).
 
-## Creating `.po` catalogues from the `.pot` file
+### Creating `.po` catalogues from the `.pot` file
 
 Using an editor such as `POEdit`, create a new catalog from the `.pot` file and ensure you set the plural form to be the correct value for the language you're about to be translating. You can find a list of plural forms [here](http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms) which should be of help. After this is done, fill out and save your `.po` file as required, placing it into a subdirectory of `./locales` which matches the languages two letter code.
 
 NOTE: If you are using POEdit and are creating a catalog for the first time you may find it best to add the plural form **after** the initial setup screen. Sometimes if the plural form is input during the first setup screen it doesn't work correctly.
 
-## Converting `.po` catalogues into `.json` catalogues
+### Converting `.po` catalogues into `.json` catalogues
 
 The library is unable to directly read a `.po` file so it must be converted into i18next-compatible `.json` format. This is done via a module known as `i18next-conv` which can do two-way conversion on both of these file formats. Conversion to `.json` files can be run with the following command:
 

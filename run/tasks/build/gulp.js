@@ -15,11 +15,14 @@ var gulp = require('gulp'),
     mergeStream = require('merge-stream');
 
 gulp.task('build', ['styles', 'scripts'], function() {
+    var localeStream = gulp.src(['./locales/**/*'], { base: './' })
+                           .pipe(gulp.dest(globalSettings.destPath));
+
     var htmlStream = gulp.src(['./html/**/*.html'])
                          .pipe(gulp.dest(globalSettings.destPath));
 
     var assetStream = gulp.src(['./fonts/**/!(dir.txt)', './img/**/!(dir.txt)'], { base: './' })
                           .pipe(gulp.dest(globalSettings.destPath));
 
-    return mergeStream(htmlStream, assetStream);
+    return mergeStream(localeStream, htmlStream, assetStream);
 });
